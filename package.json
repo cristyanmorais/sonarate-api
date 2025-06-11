@@ -4,9 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "test:db": "ts-node src/infra/prisma/test-connection.ts"
   },
   "repository": {
     "type": "git",
@@ -20,6 +25,7 @@
   },
   "homepage": "https://github.com/cristyanmorais/sonarate-api#readme",
   "dependencies": {
+    "@prisma/client": "^6.9.0",
     "axios": "^1.9.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
@@ -29,5 +35,14 @@
     "nodemon": "^3.1.10",
     "pg": "^8.16.0",
     "prisma": "^6.9.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^24.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
   }
 }

@@ -1,0 +1,196 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id        Int       @id @default(autoincrement())
+  name      String
+  surname   String
+  username  String    @unique
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  reviews   Review[]
+  listeneds Listened[]
+  likes     Like[]
+  lists     List[]
+  followers Follower[] @relation("Follower")
+  following Follower[] @relation("Following")
+
+  @@map("account")
+}
+
+model Genre {
+  id        Int          @id @default(autoincrement())
+  name      String
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime?    @map("deleted_at")
+  artists   ArtistGenre[]
+
+  @@map("genre")
+}
+
+model Artist {
+  id        Int          @id @default(autoincrement())
+  name      String
+  mbid      String?      @db.Uuid
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime?    @map("deleted_at")
+  
+  albums    Album[]
+  genres    ArtistGenre[]
+
+  @@map("artist")
+}
+
+model Album {
+  id          Int       @id @default(autoincrement())
+  artistId    Int       @map("artist_id")
+  name        String
+  yearRelease String    @map("year_release")
+  mbid        String?   @db.Uuid
+  coverUrl    String?   @map("cover_url")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  artist      Artist    @relation(fields: [artistId], references: [id])
+  songs       Song[]
+
+  @@map("album")
+}
+
+model Song {
+  id        Int       @id @default(autoincrement())
+  albumId   Int       @map("album_id")
+  name      String
+  mbid      String?   @db.Uuid
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  album     Album     @relation(fields: [albumId], references: [id])
+
+  @@map("song")
+}
+
+model Review {
+  id          Int       @id @default(autoincrement())
+  accountId   Int       @map("account_id")
+  targetType  String    @map("target_type")
+  targetId    Int       @map("target_id")
+  rating      Int
+  description String?
+  reviewDate  DateTime  @map("review_date")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  account     Account   @relation(fields: [accountId], references: [id])
+
+  @@map("review")
+}
+
+model Listened {
+  id         Int       @id @default(autoincrement())
+  accountId  Int       @map("account_id")
+  targetType String    @map("target_type")
+  targetId   Int       @map("target_id")
+  status     Int       @default(1)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt  DateTime? @map("deleted_at")
+
+  account    Account   @relation(fields: [accountId], references: [id])
+
+  @@map("listened")
+}
+
+model Like {
+  id         Int       @id @default(autoincrement())
+  accountId  Int       @map("account_id")
+  targetType String    @map("target_type")
+  targetId   Int       @map("target_id")
+  status     Int       @default(1)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt  DateTime? @map("deleted_at")
+
+  account    Account   @relation(fields: [accountId], references: [id])
+
+  @@map("like")
+}
+
+model List {
+  id         Int         @id @default(autoincrement())
+  accountId  Int         @map("account_id")
+  name       String
+  targetType String      @map("target_type")
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @default(now()) @updatedAt @map("updated_at")
+  deletedAt  DateTime?   @map("deleted_at")
+
+  account    Account     @relation(fields: [accountId], references: [id])
+  items      ListItem[]
+
+  @@map("list")
+}
+
+model ArtistGenre {
+  artistId   Int       @map("artist_id")
+  genreId    Int       @map("genre_id")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt  DateTime? @map("deleted_at")
+
+  artist     Artist    @relation(fields: [artistId], references: [id])
+  genre      Genre     @relation(fields: [genreId], references: [id])
+
+  @@id([artistId, genreId])
+  @@map("artist_genre")
+}
+
+model ListItem {
+  listId    Int       @map("list_id")
+  targetId  Int       @map("target_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  list      List      @relation(fields: [listId], references: [id])
+
+  @@id([listId, targetId])
+  @@map("list_item")
+}
+
+model Follower {
+  followerId  Int       @map("follower_id")
+  followingId Int       @map("following_id")
+  followedAt  DateTime  @default(now()) @map("followed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  follower    Account   @relation("Follower", fields: [followerId], references: [id])
+  following   Account   @relation("Following", fields: [followingId], references: [id])
+
+  @@id([followerId, followingId])
+  @@map("follower")
+}
