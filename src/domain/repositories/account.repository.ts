@@ -18,27 +18,47 @@ export class AccountRepository {
     });
   }
 
+  async findAll(): Promise<Account[]> {
+    return this.prisma.account.findMany({
+      where: {
+        deletedAt: null
+      }
+    });
+  }
+
   async findById(id: number): Promise<Account | null> {
     return this.prisma.account.findUnique({
-      where: { id }
+      where: { 
+        id,
+        deletedAt: null
+      }
     });
   }
 
   async findByEmail(email: string): Promise<Account | null> {
     return this.prisma.account.findUnique({
-      where: { email }
+      where: { 
+        email,
+        deletedAt: null
+      }
     });
   }
 
   async findByUsername(username: string): Promise<Account | null> {
     return this.prisma.account.findUnique({
-      where: { username }
+      where: { 
+        username,
+        deletedAt: null
+      }
     });
   }
 
   async update(id: number, data: UpdateAccountDTO): Promise<Account> {
     return this.prisma.account.update({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null
+      },
       data: {
         ...data,
         updatedAt: new Date()
@@ -48,17 +68,12 @@ export class AccountRepository {
 
   async delete(id: number): Promise<Account> {
     return this.prisma.account.update({
-      where: { id },
+      where: { 
+        id,
+        deletedAt: null
+      },
       data: {
         deletedAt: new Date()
-      }
-    });
-  }
-
-  async findAll(): Promise<Account[]> {
-    return this.prisma.account.findMany({
-      where: {
-        deletedAt: null
       }
     });
   }

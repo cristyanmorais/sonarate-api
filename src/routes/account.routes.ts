@@ -6,7 +6,7 @@ import { isAccountOwner, validateAccountData } from '../infra/http/middlewares/a
 const router = Router();
 const controller = new AccountController();
 
-// Rotas públicas
+// Public Routes
 router.post('/login', async (req: Request, res: Response) => {
   await controller.login(req, res);
 });
@@ -15,8 +15,8 @@ router.post('/register', validateAccountData, async (req: Request, res: Response
   await controller.create(req, res);
 });
 
-// Rotas protegidas
-// router.use(authMiddleware); // Middleware de autenticação para todas as rotas abaixo
+// Protected Routes
+// router.use(authMiddleware); // Auth middleware to protect routes below
 
 router.get('/', async (req: Request, res: Response) => {
   await controller.findAll(req, res);
@@ -26,11 +26,11 @@ router.get('/:id', async (req: Request, res: Response) => {
   await controller.findById(req, res);
 });
 
-router.put('/:id', async (req: Request, res: Response) => {
+router.put('/update/:id', async (req: Request, res: Response) => {
   await controller.update(req, res);
 });
 
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/delete/:id', async (req: Request, res: Response) => {
   await controller.delete(req, res);
 });
 

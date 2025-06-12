@@ -18,7 +18,16 @@ export class AccountController {
       if (error instanceof Error) {
         return res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  async findAll(req: Request, res: Response): Promise<Response> {
+    try {
+      const accounts = await this.service.findAll();
+      return res.json(accounts);
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal server error' });
     }
   }
 
@@ -31,7 +40,7 @@ export class AccountController {
       if (error instanceof Error) {
         return res.status(404).json({ error: error.message });
       }
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      return res.status(500).json({ error: 'Internal server error' });
     }
   }
 
@@ -45,7 +54,7 @@ export class AccountController {
       if (error instanceof Error) {
         return res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      return res.status(500).json({ error: 'Internal server error' });
     }
   }
 
@@ -58,16 +67,7 @@ export class AccountController {
       if (error instanceof Error) {
         return res.status(404).json({ error: error.message });
       }
-      return res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-  }
-
-  async findAll(req: Request, res: Response): Promise<Response> {
-    try {
-      const accounts = await this.service.findAll();
-      return res.json(accounts);
-    } catch (error) {
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      return res.status(500).json({ error: 'Internal server error' });
     }
   }
 
@@ -84,7 +84,7 @@ export class AccountController {
       if (error instanceof Error) {
         return res.status(401).json({ error: error.message });
       }
-      return res.status(500).json({ error: 'Erro interno do servidor' });
+      return res.status(500).json({ error: 'Internal server error' });
     }
   }
 } 

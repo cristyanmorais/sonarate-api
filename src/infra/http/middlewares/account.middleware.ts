@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 
-// Verifica se o usuário está tentando acessar/modificar sua própria conta
+// Checks if the user is trying to access/update their own account
 export const isAccountOwner = (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.id;
     const accountId = Number(req.params.id);
@@ -13,7 +13,7 @@ export const isAccountOwner = (req: Request, res: Response, next: NextFunction) 
     next();
 };
 
-// Valida os dados antes de criar/atualizar uma conta
+// Validates the data before creating/updating an account
 export const validateAccountData = (req: Request, res: Response, next: NextFunction) => {
     const accountSchema = z.object({
         name: z.string().min(3, 'Name need to be at least 3 characters'),
