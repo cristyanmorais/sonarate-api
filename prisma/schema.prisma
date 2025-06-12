@@ -49,7 +49,8 @@ model Genre {
 model Artist {
   id        Int          @id @default(autoincrement())
   name      String
-  mbid      String?      @db.Uuid
+  mbid      String?      @unique @db.Uuid
+  imageUrl  String?      @map("image_url")
   createdAt DateTime     @default(now()) @map("created_at")
   updatedAt DateTime     @default(now()) @updatedAt @map("updated_at")
   deletedAt DateTime?    @map("deleted_at")
